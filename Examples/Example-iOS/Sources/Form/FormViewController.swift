@@ -1,6 +1,27 @@
 import UIKit
 import Carbon
 
+// swiftlint:disable all
+let NEXTRESPONSE_TAG_OFFSET = 100
+extension UITableView {
+    
+    func nextResponder(_ fromTextfieldWithTag: Int){
+        var currIndex = -1
+        for i in fromTextfieldWithTag+1..<fromTextfieldWithTag+NEXTRESPONSE_TAG_OFFSET{
+            if let view = self.superview?.superview?.viewWithTag(i){
+                view.becomeFirstResponder()
+                currIndex = i
+                break
+            }
+        }
+        // move to
+        let ind = IndexPath(row: currIndex - NEXTRESPONSE_TAG_OFFSET, section: 0)
+        if let nextCell = self.cellForRow(at: ind){
+            self.scrollRectToVisible(nextCell.frame, animated: true)
+        }
+    }
+}
+
 final class FormViewController: UIViewController {
     enum ID {
         case about
@@ -19,6 +40,7 @@ final class FormViewController: UIViewController {
 
     struct State {
         var name: String?
+        var cognome: String?
         var gender: Gender?
         var birthday: Date?
         var location: String?
@@ -48,7 +70,7 @@ final class FormViewController: UIViewController {
         title = "Profile Form"
         tableView.rowHeight = UITableView.automaticDimension
         tableView.estimatedRowHeight = UITableView.automaticDimension
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillChangeFrame), name: UIResponder.keyboardWillChangeFrameNotification, object: nil)
+                NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillChangeFrame), name: UIResponder.keyboardWillChangeFrameNotification, object: nil)
 
         renderer.updater.deleteRowsAnimation = .middle
         renderer.updater.insertRowsAnimation = .middle
@@ -59,64 +81,200 @@ final class FormViewController: UIViewController {
     }
 
     func render() {
+        
         renderer.render(
             Section(
                 id: ID.about,
                 header: ViewNode(Header(title: "ABOUT")),
                 cells: [
-                    CellNode(FormTextField(title: "Name", text: state.name) { [weak self] text in
-                        self?.state.name = text
-                    }),
-                    CellNode(FormLabel(title: "Gender", text: state.gender?.rawValue) { [weak self] in
-                        self?.state.isOpenGenderPicker.toggle()
-                    }),
-                    !state.isOpenGenderPicker ? nil : CellNode(id: ID.genderPicker, FormTextPicker(texts: Gender.allTexts) { [weak self] text in
-                        self?.state.gender = Gender(rawValue: text)
-                    }),
-                    CellNode(FormLabel(title: "Birthday", text: state.birthday?.longText) { [weak self] in
-                        self?.state.isOpenBirthdayPicker.toggle()
-                    }),
-                    !state.isOpenBirthdayPicker ? nil : CellNode(id: ID.birthdayPicker, FormDatePicker(date: state.birthday ?? Date()) { [weak self] date in
-                        self?.state.birthday = date
-                    })
-                ]
-            ),
-            Section(
-                id: ID.note,
-                header: ViewNode(Header(title: "NOTE")),
-                cells: [
-                    CellNode(id: ID.note, FormTextView(text: state.note) { [weak self] text in
-                        self?.state.note = text
-
-                        UIView.performWithoutAnimation {
-                            self?.tableView.beginUpdates()
-                            self?.tableView.endUpdates()
-                        }
-                    })
-                ]
-            ),
-            Section(
-                id: ID.detail,
-                header: ViewNode(Header(title: "DETAILS")),
-                cells: [
-                    CellNode(FormSwitch(title: "Show Details", isOn: state.isOpenDetails) { [weak self] isOn in
-                        self?.state.isOpenDetails = isOn
-                    })
-                ]
-            ),
-            !state.isOpenDetails ? nil : Section(
-                id: ID.detailsInput,
-                header: ViewNode(Spacing(height: 12)),
-                cells: [
-                    CellNode(FormTextField(title: "Location", text: state.location) { [weak self] text in
-                        self?.state.location = text
-                    }),
-                    CellNode(FormTextField(title: "Email", text: state.email, keyboardType: .emailAddress) { [weak self] text in
-                        self?.state.email = text
-                    }),
-                    CellNode(FormTextField(title: "Job", text: state.job) { [weak self] text in
-                        self?.state.job = text
-                    })
+                    CellNode(FormTextField(title: "text",
+                                           text: state.name,
+                                           onInput: { [weak self] text in
+                                            if let strong = self {
+                                                strong.state.name = text }},
+                                           nextTextField: {[weak self] textfield in
+                                                self?.tableView?.nextResponder(textfield.tag) },
+                                           nextResponseOrder:1)),
+                    CellNode(FormTextField(title: "text2",
+                                           text: state.name,
+                                           onInput: { [weak self] text in
+                                            if let strong = self {
+                                                strong.state.name = text }},
+                                           nextTextField: {[weak self] textfield in
+                                            self?.tableView?.nextResponder(textfield.tag) },
+                                           nextResponseOrder:2)),
+                    CellNode(FormTextField(title: "text3",
+                                           text: state.name,
+                                           onInput: { [weak self] text in
+                                            if let strong = self {
+                                                strong.state.name = text }},
+                                           nextTextField: {[weak self] textfield in
+                                            self?.tableView?.nextResponder(textfield.tag) },
+                                           nextResponseOrder:3)),
+                    CellNode(FormTextField(title: "text4",
+                                           text: state.name,
+                                           onInput: { [weak self] text in
+                                            if let strong = self {
+                                                strong.state.name = text }},
+                                           nextTextField: {[weak self] textfield in
+                                            self?.tableView?.nextResponder(textfield.tag) },
+                                           nextResponseOrder:4)),
+                    CellNode(FormTextField(title: "text5",
+                                           text: state.name,
+                                           onInput: { [weak self] text in
+                                            if let strong = self {
+                                                strong.state.name = text }},
+                                           nextTextField: {[weak self] textfield in
+                                            self?.tableView?.nextResponder(textfield.tag) },
+                                           nextResponseOrder:5)),
+                    CellNode(FormTextField(title: "text6",
+                                           text: state.name,
+                                           onInput: { [weak self] text in
+                                            if let strong = self {
+                                                strong.state.name = text }},
+                                           nextTextField: {[weak self] textfield in
+                                            self?.tableView?.nextResponder(textfield.tag) },
+                                           nextResponseOrder:6)),
+                    CellNode(FormTextField(title: "text7",
+                                           text: state.name,
+                                           onInput: { [weak self] text in
+                                            if let strong = self {
+                                                strong.state.name = text }},
+                                           nextTextField: {[weak self] textfield in
+                                            self?.tableView?.nextResponder(textfield.tag) },
+                                           nextResponseOrder:7)),
+                    CellNode(FormTextField(title: "text8",
+                                           text: state.name,
+                                           onInput: { [weak self] text in
+                                            if let strong = self {
+                                                strong.state.name = text }},
+                                           nextTextField: {[weak self] textfield in
+                                            self?.tableView?.nextResponder(textfield.tag) },
+                                           nextResponseOrder:8)),
+                    CellNode(FormTextField(title: "text9",
+                                           text: state.name,
+                                           onInput: { [weak self] text in
+                                            if let strong = self {
+                                                strong.state.name = text }},
+                                           nextTextField: {[weak self] textfield in
+                                            self?.tableView?.nextResponder(textfield.tag) },
+                                           nextResponseOrder:9)),
+                    CellNode(FormTextField(title: "text10",
+                                           text: state.name,
+                                           onInput: { [weak self] text in
+                                            if let strong = self {
+                                                strong.state.name = text }},
+                                           nextTextField: {[weak self] textfield in
+                                            self?.tableView?.nextResponder(textfield.tag) },
+                                           nextResponseOrder:10)),
+                    CellNode(FormTextField(title: "text11",
+                                           text: state.name,
+                                           onInput: { [weak self] text in
+                                            if let strong = self {
+                                                strong.state.name = text }},
+                                           nextTextField: {[weak self] textfield in
+                                            self?.tableView?.nextResponder(textfield.tag) },
+                                           nextResponseOrder:11)),
+                    CellNode(FormTextField(title: "text",
+                                           text: state.name,
+                                           onInput: { [weak self] text in
+                                            if let strong = self {
+                                                strong.state.name = text }},
+                                           nextTextField: {[weak self] textfield in
+                                            self?.tableView?.nextResponder(textfield.tag) },
+                                           nextResponseOrder:12)),
+                    CellNode(FormTextField(title: "text2",
+                                           text: state.name,
+                                           onInput: { [weak self] text in
+                                            if let strong = self {
+                                                strong.state.name = text }},
+                                           nextTextField: {[weak self] textfield in
+                                            self?.tableView?.nextResponder(textfield.tag) },
+                                           nextResponseOrder:13)),
+                    CellNode(FormTextField(title: "text3",
+                                           text: state.name,
+                                           onInput: { [weak self] text in
+                                            if let strong = self {
+                                                strong.state.name = text }},
+                                           nextTextField: {[weak self] textfield in
+                                            self?.tableView?.nextResponder(textfield.tag) },
+                                           nextResponseOrder:14)),
+                    CellNode(FormTextField(title: "text4",
+                                           text: state.name,
+                                           onInput: { [weak self] text in
+                                            if let strong = self {
+                                                strong.state.name = text }},
+                                           nextTextField: {[weak self] textfield in
+                                            self?.tableView?.nextResponder(textfield.tag) },
+                                           nextResponseOrder:15)),
+                    CellNode(FormTextField(title: "text5",
+                                           text: state.name,
+                                           onInput: { [weak self] text in
+                                            if let strong = self {
+                                                strong.state.name = text }},
+                                           nextTextField: {[weak self] textfield in
+                                            self?.tableView?.nextResponder(textfield.tag) },
+                                           nextResponseOrder:16)),
+                    CellNode(FormTextField(title: "text6",
+                                           text: state.name,
+                                           onInput: { [weak self] text in
+                                            if let strong = self {
+                                                strong.state.name = text }},
+                                           nextTextField: {[weak self] textfield in
+                                            self?.tableView?.nextResponder(textfield.tag) },
+                                           nextResponseOrder:17)),
+                    CellNode(FormTextField(title: "text7",
+                                           text: state.name,
+                                           onInput: { [weak self] text in
+                                            if let strong = self {
+                                                strong.state.name = text }},
+                                           nextTextField: {[weak self] textfield in
+                                            self?.tableView?.nextResponder(textfield.tag) },
+                                           nextResponseOrder:18)),
+                    CellNode(FormTextField(title: "text8",
+                                           text: state.name,
+                                           onInput: { [weak self] text in
+                                            if let strong = self {
+                                                strong.state.name = text }},
+                                           nextTextField: {[weak self] textfield in
+                                            self?.tableView?.nextResponder(textfield.tag) },
+                                           nextResponseOrder:19)),
+                    CellNode(FormTextField(title: "text9",
+                                           text: state.name,
+                                           onInput: { [weak self] text in
+                                            if let strong = self {
+                                                strong.state.name = text }},
+                                           nextTextField: {[weak self] textfield in
+                                            self?.tableView?.nextResponder(textfield.tag) },
+                                           nextResponseOrder:20)),
+                    CellNode(FormTextField(title: "text10",
+                                           text: state.name,
+                                           onInput: { [weak self] text in
+                                            if let strong = self {
+                                                strong.state.name = text }},
+                                           nextTextField: {[weak self] textfield in
+                                            self?.tableView?.nextResponder(textfield.tag) },
+                                           nextResponseOrder:21)),
+                    CellNode(FormTextField(title: "text11",
+                                           text: state.name,
+                                           onInput: { [weak self] text in
+                                            if let strong = self {
+                                                strong.state.name = text }},
+                                           nextTextField: {[weak self] textfield in
+                                            self?.tableView?.nextResponder(textfield.tag) },
+                                           nextResponseOrder:22)),
+                    CellNode(FormTextField(title: "text12",
+                                           text: state.cognome,
+                                           returnKey: UIReturnKeyType.send,
+                                           onInput: { [weak self] text in
+                                            if let strong = self {
+                                                strong.state.cognome = text }},
+                                           nextTextField: {textfield in
+                                                print("confirm button action to call")
+                                                // keyboard down!
+                                                textfield.resignFirstResponder() },
+                                           nextResponseOrder:23))
+                    
                 ]
             )
         )
